@@ -10,6 +10,7 @@ usage: <command> <...params>
        command: | print                 => print status of the game
                 | priority <id> <level> => set orc priority (low|medium|high)
                 | destroy  <id>         => destroy the orc with ID 
+                | generate              => generate three random orcs 
                 | ?                     => display this message
                 | X                     => quit the game
 """
@@ -79,6 +80,13 @@ while commands[0] != "X":
       if orc.id() == int(arguments[0]):
         orcs.remove(orc)
         print "Removed orc " + arguments[0] 
+  elif command == "generate":
+    orcs.append(generate_orc())
+    orcs.append(generate_orc())
+    orcs.append(generate_orc())
+    print "generated three orcs"
+  elif command == "ENTer" and len (arguments) > 1 and arguments[0] == "the" and arguments[1] == "Trees":  
+    orcs = []
   elif command == "priority" and len(arguments) > 1:
     for orc in orcs:
       if orc.id() == int(arguments[0]):
