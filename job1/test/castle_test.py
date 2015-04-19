@@ -25,5 +25,22 @@ class CastleTest(unittest.TestCase):
     message = castle.check_orcs ([orc])
     self.assertEqual(message,"breach")
 
+  def test_convert_imperial(self):
+    castle = Castle([0,0])         
+    self.assertEqual( 3.28084 * 2, castle.convert(2, "imperial")) 
+
+  def test_convert_parsec(self):
+    castle = Castle([0,0])         
+    self.assertEqual( 0.032408 * 2, castle.convert(2, "parsec")) 
+
+  def test_convert_nautical(self):        
+    castle = Castle([0,0])         
+    self.assertEqual( 0.00053996 * 2, castle.convert(2, "nautical")) 
+    
+  def test_convert_metric(self):
+    castle = Castle([0,0])         
+    self.assertEqual( 2, castle.convert(2, "metric"))         
+
+
 if __name__ == '__main__':
     unittest.main()

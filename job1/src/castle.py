@@ -17,7 +17,7 @@ class Castle(object):
 
   def convert(self, metric_distance, unit):
     if unit == 'imperial':
-      return metric_distance / 3.28084
+      return metric_distance * 3.28084
     elif unit == 'parsec':
       return metric_distance * 0.032408 # x 10^-15
     elif unit == 'nautical':

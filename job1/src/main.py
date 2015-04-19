@@ -9,6 +9,7 @@ usage: <command> <...params>
 
        command: | print                 => print status of the game
                 | priority <id> <level> => set orc priority (low|medium|high)
+                | destroy  <id>         => destroy the orc with ID 
                 | ?                     => display this message
                 | X                     => quit the game
 """
@@ -73,6 +74,11 @@ while commands[0] != "X":
     print_board()
   elif command == "?":
     print help
+  elif command == "destory" and len(arguments)  > 0:
+    for orc in orcs:
+      if orc.id() == int(arguments[0]):
+        orcs.remove(orc)
+        print "Removed orc " + arguments[0] 
   elif command == "priority" and len(arguments) > 1:
     for orc in orcs:
       if orc.id() == int(arguments[0]):

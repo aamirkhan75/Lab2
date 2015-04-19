@@ -1,7 +1,7 @@
 import random
 
 class Orc(object):
-  def __init__(self, location, type):
+  def __init__(self, location, type ='Strongman'):
     self.location = location
     self.type = type
     self.priority = 'low'
