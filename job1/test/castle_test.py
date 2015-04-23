@@ -40,7 +40,7 @@ class CastleTest(unittest.TestCase):
   def test_convert_metric(self):
     castle = Castle([0,0])         
     self.assertEqual( 2, castle.convert(2, "metric"))         
-
+ 
 
 if __name__ == '__main__':
     unittest.main()
