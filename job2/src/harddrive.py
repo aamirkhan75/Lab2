@@ -1,4 +1,4 @@
 class Harddrive(object):
-  def __init__(self, speed, size):
-    self.speed = speed
+  def __init__(self, size, speed):
     self.size  = size
+    self.speed = speed

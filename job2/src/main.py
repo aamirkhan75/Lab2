@@ -1,20 +1,26 @@
+import math
+
 from city import *
 from harddrive import *
+from calculator import *
 
 
 help = """
 usage: <command> <...params>
 
-       command: | print   => print cities, distance, and connetion speed from the file
-                | compare => compare download and hard drive speed for file of some size (GB)
+       command: | print   => print cities, location, and connetion speed from the file
+                | compare => compare driving and route for a city or route for some filesize (GB)
                 | set     => sets which sized (GB) hard drive is being used
-                | create  => creates a new city with a distance (km) and a speed (mbps)
+                | create  => creates a new city with a location (x and y) and a speed (mbps)
                 | drive   => set the current car (Porsche, Bus, CementTruck, LadenSwallow)
+                | route   => creates a route of cities
                 | ?       => display this message
                 | X       => quit the game
 """
 
 cities = []
+routes = []
+location = [0, 0]
 
 car = 'Bus'
 
@@ -28,47 +34,74 @@ cars = {
 with open('./job2/src/data.txt') as f:
   for line in f.readlines():
     data = line.strip().split(',')
-    cities.append(City(data[0], int(data[1]), int(data[2])))
+    cities.append(City(data[0], int(data[1]), [int(data[2]), int(data[3])]))
 
-hard_drive = Harddrive(50, 1000)
+hard_drive = Harddrive(500, 100) # 500GB
 
 def print_game():
   print '------------------------------------------'
   print 'current drive: %d GB' % (hard_drive.size)
   print 'current car:   ' + car
   print '------------------------------------------'
+  print '\nCities:'
   for city in cities:
     print 'city name: ' + city.name
     print 'speed:     %d mbps' % city.speed
-    print 'distance:  %d km\n' % city.distance
+    print 'location:  [%d, %d]' % (city.location[0], city.location[1])
+    print 'distance:  %d km\n' % distance(city.location, location)
+  print '\nRoutes:'
+  for index, route in enumerate(routes):
+    print '%d:' % index
+    for city in route:
+      print '  | ' + city.name
+    print '\n'
 
-def city_by_name(name):
-  for city in cities:
-    if name == city.name:
-      return city
+def city_or_route_by_name(name):
+  try:
+    id = int(name)
+    return routes[id]
 
-def compare(city, size):
-  city_obj = city_by_name(city)
-  size_nbr = int(size)
-  trips = ((size_nbr // hard_drive.size) * 2) + 1
-
-  city_time = (size_nbr * 8000) / city_obj.speed
-  drive_time = ((trips * city_obj.distance) / cars[car]) * 60 * 60
-
-  return {
-    'city_time': city_time,
-    'drive_time': drive_time
-  }
+  except ValueError:
+    for city in cities:
+      if name == city.name:
+        return city
 
 def write_city_file(city):
   f = open('./' + city.name + '.city','w')
-  f.write(city.name + ', %d, %d' % (city.speed, city.distance))
+  f.write(city.name + ', %d, %d, %d' % (city.speed, city.location[0], city.location[1]))
   f.close()
 
 def parse_input(input):
   return input.split()
 
-commands = parse_input(raw_input("Enter a command: "))
+location = city_or_route_by_name('GrantsPass').location
+
+print """
+  Welcome to the network research tool
+
+  Available cities are:
+
+                | GrantsPass (Default)
+                | SanFrancisco
+                | Portland
+                | NewYork
+                | LosAngeles
+                | Detroit
+                | SanAntonio
+                | Memphis
+                | Chicago
+                | Philadelphia
+"""
+commands = parse_input(raw_input("Please enter you city: "))
+
+if len(commands) == 0:
+  commands = ["empty"]
+
+input_city = city_or_route_by_name(commands[0])
+if input_city:
+  location = input_city.location
+else:
+  print "We could not find that city, defaulting to GrantsPass"
 
 while commands[0] != "X":
   command = commands[0]
@@ -79,7 +112,7 @@ while commands[0] != "X":
   elif command == "?":
     print help
   elif command == "compare":
-    results = compare(arguments[0], arguments[1])
+    results = compare(city_or_route_by_name(arguments[0]), hard_drive, arguments[1], location, cars[car])
     print "Network Time:    %d s" % results['city_time']
     print "Hard Drive Time: %d s" % results['drive_time']
     if results['city_time'] < results['drive_time']:
@@ -100,4 +133,16 @@ while commands[0] != "X":
       car = car_in
     else:
       print 'Car not found.'
+  elif command == "route":
+    route = []
+    for city in arguments:
+      for city_obj in cities:
+        if city == city_obj.name:
+          route.append(city_obj)
+    if len(route) > 0:
+      routes.append(route)
+    else:
+      print "No valid cities detected."
   commands = parse_input(raw_input("Enter a command: "))
+  if len(commands) == 0:
+    commands = ["empty"]

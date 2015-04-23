@@ -1,3 +1,10 @@
-GrantsPass, 400, 100
-SanFrancisco, 2000, 70
-Portland, 1300, 90
+GrantsPass, 100, 2000, 1200
+SanFrancisco, 100, 702, 1440
+Portland, 90, 904, 1300
+NewYork, 50, 4000, 2134
+LosAngeles, 86, 4343, 3543
+Detroit, 43, 545, 3432
+SanAntonio, 41, 4534, 540
+Memphis, 23, 534, 4543
+Chicago, 51, 982, 8493
+Philadelphia, 320, 3254, 903

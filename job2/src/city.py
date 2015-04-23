@@ -1,5 +1,5 @@
 class City(object):
-  def __init__(self, name, speed, distance):
+  def __init__(self, name, speed, location):
     self.name = name
     self.speed = speed
-    self.distance = distance
+    self.location = location
