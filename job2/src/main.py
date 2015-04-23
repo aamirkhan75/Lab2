@@ -8,11 +8,22 @@ usage: <command> <...params>
        command: | print   => print cities, distance, and connetion speed from the file
                 | compare => compare download and hard drive speed for file of some size (GB)
                 | set     => sets which sized (GB) hard drive is being used
+                | create  => creates a new city with a distance (km) and a speed (mbps)
+                | drive   => set the current car (Porsche, Bus, CementTruck, LadenSwallow)
                 | ?       => display this message
                 | X       => quit the game
 """
 
 cities = []
+
+car = 'Bus'
+
+cars = {
+  'Porsche': 200,
+  'Bus': 110,
+  'Cement Truck': 100,
+  'LadenSwallow': 60
+}
 
 with open('./job2/src/data.txt') as f:
   for line in f.readlines():
@@ -23,7 +34,8 @@ hard_drive = Harddrive(50, 1000)
 
 def print_game():
   print '------------------------------------------'
-  print 'current drive: %d GB, %d mbps' % (hard_drive.size, hard_drive.speed)
+  print 'current drive: %d GB' % (hard_drive.size)
+  print 'current car:   ' + car
   print '------------------------------------------'
   for city in cities:
     print 'city name: ' + city.name
@@ -35,18 +47,23 @@ def city_by_name(name):
     if name == city.name:
       return city
 
-def compare(city, size, distance):
+def compare(city, size):
   city_obj = city_by_name(city)
   size_nbr = int(size)
-  dist_nbr = int(distance)
+  trips = ((size_nbr // hard_drive.size) * 2) + 1
 
   city_time = (size_nbr * 8000) / city_obj.speed
-  drive_time = (size_nbr * 8000) / hard_drive.speed
+  drive_time = ((trips * city_obj.distance) / cars[car]) * 60 * 60
 
   return {
     'city_time': city_time,
     'drive_time': drive_time
   }
+
+def write_city_file(city):
+  f = open('./' + city.name + '.city','w')
+  f.write(city.name + ', %d, %d' % (city.speed, city.distance))
+  f.close()
 
 def parse_input(input):
   return input.split()
@@ -62,7 +79,7 @@ while commands[0] != "X":
   elif command == "?":
     print help
   elif command == "compare":
-    results = compare(arguments[0], arguments[1], arguments[2])
+    results = compare(arguments[0], arguments[1])
     print "Network Time:    %d s" % results['city_time']
     print "Hard Drive Time: %d s" % results['drive_time']
     if results['city_time'] < results['drive_time']:
@@ -73,4 +90,14 @@ while commands[0] != "X":
       print 'Tie.\n'
   elif command == "set":
     hard_drive = Harddrive(int(arguments[0]), int(arguments[1]))
+  elif command == "create":
+    new_city = City(arguments[0], int(arguments[1]), int(arguments[2]))
+    write_city_file(new_city)
+    cities.append(new_city)
+  elif command == "drive":
+    car_in = arguments[0]
+    if car_in in cars:
+      car = car_in
+    else:
+      print 'Car not found.'
   commands = parse_input(raw_input("Enter a command: "))
