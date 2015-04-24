@@ -48,7 +48,7 @@ def print_game():
     print 'city name: ' + city.name
     print 'speed:     %d mbps' % city.speed
     print 'location:  [%d, %d]' % (city.location[0], city.location[1])
-    print 'distance:  %d km\n' % distance(city.location, location)
+    print 'distance:  %d km\n' % city.calculatedistance(location)
   print '\nRoutes:'
   for index, route in enumerate(routes):
     print '%d:' % index

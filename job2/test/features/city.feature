@@ -1,6 +1,7 @@
-Feature: Showing off behave (tutorial01)
 
-Scenario: Run a simple test
-    Given we have behave installed
-    When we implement a test
-    Then behave will test it for us!
+Feature: comparing speed
+
+Scenario: distance on speed
+    Given The size "20", location ["0", "200"]
+    When comparing the driving speed and downloading speed
+    Then It should give "320" and "3601600.0"
